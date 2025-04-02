@@ -22,7 +22,9 @@ export default function Signup() {
                 { formData },
                 { headers: { "Content-Type": "application/json" } }
             );
+            const data = await res.data;
             if (res.status === 201) {
+                localStorage.setItem(`privKey-${data.username}`, data.privateKey);
                 router.push("/signin"); 
             } else {
                 throw new Error("Signup failed");

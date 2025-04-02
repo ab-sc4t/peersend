@@ -1,6 +1,7 @@
 import { authOptions } from "@/lib/auth";
 import Button from "@/ui/Button";
 import { getServerSession } from "next-auth";
+import LogoutButton from "./LogoutButton";
 
 export default async function Header() {
     const session = await getServerSession(authOptions)
@@ -11,14 +12,27 @@ export default async function Header() {
                 PeerSend
             </div>
             <div className="flex justify-center items-center gap-4">
-                <Button
-                    text="Register"
-                    href="/signup"
-                />
-                <Button
-                    text="Login"
-                    href="/signin"
-                />
+                {session?.user ? (
+                    <>
+                        <span className="text-xl p-2">
+                            Welcome, {session.user.firstname || 'User'}!
+                        </span>
+                        <div>
+                            <LogoutButton />
+                        </div>
+                    </>
+                ) : (
+                    <>
+                        <Button
+                            text="Register"
+                            href="/signup"
+                        />
+                        <Button
+                            text="Login"
+                            href="/signin"
+                        />
+                    </>
+                )}
             </div>
         </div>
     )

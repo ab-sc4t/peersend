@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcrypt";
 import { db } from "@/lib/db";
+import * as ed from "@noble/ed25519";
 
 export async function POST(req){
     try{
@@ -29,11 +30,17 @@ export async function POST(req){
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);
-        const publicKey = "testing";
 
-        const newUser = await db.user.create({data:{email, firstname, lastname, username, publicKey, password: hashedPassword}});
+        const privKey = ed.utils.randomPrivateKey();
+        const pubKey = await ed.getPublicKeyAsync(privKey);
+        const privKeyBase64 = Buffer.from(privKey).toString("base64");
+        const pubKeyBase64 = Buffer.from(pubKey).toString("base64");
+        console.log("Public Key: ", pubKeyBase64);
+        console.log("Private Key: ", privKeyBase64);
+
+        const newUser = await db.user.create({data:{email, firstname, lastname, username, publicKey: pubKeyBase64, password: hashedPassword}});
         const { password: _, ...safeUserData } = newUser;
-        return NextResponse.json(safeUserData, { status: 201 }); 
+        return NextResponse.json({ ...safeUserData, privateKey: privKeyBase64 }, { status: 201 }); 
         
     } catch(error){
         console.error("Signup error:", error);

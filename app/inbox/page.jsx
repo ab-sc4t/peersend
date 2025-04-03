@@ -31,7 +31,6 @@ export default function Inbox() {
             </div>
             <div className="bg-white/10 ronuded-xl py-4 px-12 rounded-xl text-2xl w-screen"> 
                 <div>
-                    {/* first mail */}
                     <div className="flex justify-between border-b order-white">
                         <div className="flex gap-4">
                             <div>User A</div>

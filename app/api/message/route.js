@@ -8,7 +8,6 @@ export async function POST(req){
         const {sender, receiver, message, subject} = body.messageData;
         const senderExists = await db.user.findUnique({where: {username: sender}});
         const receiverExists = await db.user.findUnique({where: {username: receiver}});
-        //although the following case cannot take place
         if(!senderExists){
             return NextResponse.json({message: "Sender username doesn't exists"}, {status: 406})
         }
@@ -16,7 +15,21 @@ export async function POST(req){
         //     return NextResponse.json({message: "Receiver username doesn't exists"}, {status: 408})
         // }
         const data = await db.message.create({data:{message, subject, receiver ,sender}})
+        return NextResponse.json({message: "Mail sent"}, {status: 201})
     } catch (error){
         console.error("Error in saving the message: ", error);
+    }
+}
+
+export async function GET(req){
+    try{
+        const { searchParams } = new URL(req.url);
+        const username = searchParams.get("user");
+        console.log("USER: ", username);
+        const messages = await db.message.findMany({where:{receiver: username}});
+        console.log("messages: ", messages);
+        return NextResponse.json({messages}, {status: 201});
+    } catch(error){
+        console.error("Error while fetching the messages of a user: ", error);
     }
 }

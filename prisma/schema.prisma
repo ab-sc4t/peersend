@@ -19,3 +19,11 @@ model User{
   publicKey     String
   createdAt     DateTime    @default(now())
 }
+
+model Message{
+  id            Int         @id   @default(autoincrement())
+  message       String
+  subject       String
+  receiver      String
+  sender        String
+}

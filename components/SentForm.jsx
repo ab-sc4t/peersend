@@ -23,6 +23,10 @@ export default function SentForm({ session }) {
         try{
             const res = axios.post("/api/message", {messageData}, {headers:{"Content-Type": "application/json"}});
             const data = await res.data;
+            if (res.status==201){
+                alert("Mail sent");
+                //route to sent mails of the sender
+            }
         } catch (error){
             console.error("Error while saving the message to db: ", error);
         }

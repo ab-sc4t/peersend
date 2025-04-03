@@ -1,36 +1,19 @@
-"use client"
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+import SentForm from "@/components/SentForm";
 
-import { useState } from "react";
+export default async function SentPage() {
+    const session = await getServerSession(authOptions);
 
-export default function Sent(){
-    const [receiver, setReceiver] = useState("");
-    
-    const handleChangeReceiver = (e) => {
-        setReceiver(e.target.value);
-        console.log(receiver);
+    if (!session) {
+        return <p className="text-center text-white">Please log in to send messages.</p>;
     }
 
-    return(
-        <div className="flex p-20 h-screen bg-center bg-cover"
+    return (
+        <div className="flex flex-col gap-8 p-20 h-screen bg-center bg-cover"
             style={{ backgroundImage: "url('/HomePageWallPaper.png')" }}
         >
-            <div className="flex text-2xl">
-                <div>To: </div>
-                <div className="m-8">
-                    <input
-                        type="receiver"
-                        id="receiver"
-                        name="receiver"
-                        required
-                        placeholder="abayush"
-                        className="bg-white/10 rounded-xl ronuded-br-xl w-36"
-                        onChange = {handleChangeReceiver}
-                    />
-                </div>
-            </div>
-            <div>
-
-            </div>
+            <SentForm session={session} />
         </div>
-    )
+    );
 }

@@ -14,9 +14,21 @@ export default async function Header() {
             <div className="flex justify-center items-center gap-4">
                 {session?.user ? (
                     <>
-                        <span className="text-xl p-2">
-                            Welcome, {session.user.firstname || 'User'}!
-                        </span>
+                        <div className="relative group inline-block">
+                            <span className="text-xl p-2">
+                                Welcome, {session.user.firstname || 'User'}!
+                            </span>
+
+                            <div className="absolute top-full mt-1 left-0 hidden group-hover:block bg-white/10 rounded shadow-md p-2 z-10">
+                                <a
+                                    href="/extract" 
+                                    className="text-sm text-white hover:underline"
+                                >
+                                    Extract private key
+                                </a>
+                            </div>
+                        </div>
+
                         <div>
                             <LogoutButton />
                         </div>
@@ -37,3 +49,6 @@ export default async function Header() {
         </div>
     )
 }
+//on hover on name show an option to extract private key for that a new page opens up where the user 
+// has to enter the account pass once it is verified then the user has to enter the 12 word mnemonic and 
+// if it is correct then from that mnemonic the user gets the corresponding provate key.

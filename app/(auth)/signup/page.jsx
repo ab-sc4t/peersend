@@ -9,6 +9,7 @@ export default function Signup() {
     const [error, setError] = useState("");
     const [mnemonic, setMnemonic] = useState("");
     const [showModal, setShowModal] = useState(false);
+    const [publicKey, setPublicKey] = useState("");
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -29,6 +30,7 @@ export default function Signup() {
             if (res.status === 201) {
                 localStorage.setItem(`privKey-${data.username}`, data.privateKey);
                 setMnemonic(data.mnemonic); // show mnemonic
+                setPublicKey(data.publicKey);
                 setShowModal(true);
             } else {
                 throw new Error("Signup failed");
@@ -132,6 +134,7 @@ export default function Signup() {
             </div>
             <MnemonicModal
                 mnemonic={mnemonic}
+                publicKey={publicKey}
                 isOpen={showModal}
                 onClose={() => setShowModal(false)}
             />

@@ -1,4 +1,5 @@
 "use client"
+import MnemonicModal from "@/components/MnemonicModal";
 import axios from "axios";
 import { useRouter } from 'next/navigation';
 import { useState } from "react";
@@ -6,6 +7,8 @@ import { useState } from "react";
 export default function Signup() {
     const router = useRouter();
     const [error, setError] = useState("");
+    const [mnemonic, setMnemonic] = useState("");
+    const [showModal, setShowModal] = useState(false);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -25,11 +28,12 @@ export default function Signup() {
             const data = await res.data;
             if (res.status === 201) {
                 localStorage.setItem(`privKey-${data.username}`, data.privateKey);
-                router.push("/signin"); 
+                setMnemonic(data.mnemonic); // show mnemonic
+                setShowModal(true);
             } else {
                 throw new Error("Signup failed");
             }
-        } catch (error){
+        } catch (error) {
             console.error("Error during signup: ", error);
             setError("Signup failed. Please check your details and try again.");
         }
@@ -126,6 +130,11 @@ export default function Signup() {
                     </a>
                 </p>
             </div>
+            <MnemonicModal
+                mnemonic={mnemonic}
+                isOpen={showModal}
+                onClose={() => setShowModal(false)}
+            />
         </div>
     );
 }

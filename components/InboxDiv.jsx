@@ -2,17 +2,18 @@
 
 import axios from "axios";
 import { useEffect, useState } from "react";
+import MessageDetail from "@/components/MessageDetail";
 
 export default function InboxDiv({ session }) {
     const [messages, setMessages] = useState([]);
+    const [openIndex, setOpenIndex] = useState(null); // store index of expanded message
 
     useEffect(() => {
         const fetchMessages = async () => {
             try {
                 const user = session.user.username;
                 const res = await axios.get(`/api/message?user=${user}`);
-
-                if (res.status === 201) {
+                if (res.status === 200) {
                     setMessages(res.data.messages);
                 } else {
                     setMessages([]);
@@ -26,19 +27,32 @@ export default function InboxDiv({ session }) {
         fetchMessages();
     }, [session]);
 
+    const handleToggle = (index) => {
+        setOpenIndex(openIndex === index ? null : index);
+    };
+
     return (
         <div>
             {messages.length > 0 ? (
                 messages.map((msg, index) => (
-                    <div key={index} className="flex justify-between border-b border-white py-2">
-                        <div className="flex gap-4">
-                            <div>{msg.sender}</div>
-                            <div>{msg.subject}</div>
+                    <div key={index} className="mb-4">
+                        <div
+                            className="flex justify-between border-b border-white py-2 px-2 cursor-pointer"
+                            onClick={() => handleToggle(index)}
+                        >
+                            <div className="flex gap-4">
+                                <div>{msg.sender}</div>
+                                <div>{msg.subject}</div>
+                            </div>
+                            <div className="flex gap-4">
+                                <button className="text-blue-500">Verify</button>
+                                <button className="text-green-500">Decrypt</button>
+                            </div>
                         </div>
-                        <div className="flex gap-4">
-                            <button className="text-blue-500">Verify</button>
-                            <button className="text-green-500">Decrypt</button>
-                        </div>
+
+                        {openIndex === index && (
+                            <MessageDetail message={msg} />
+                        )}
                     </div>
                 ))
             ) : (

@@ -26,4 +26,5 @@ model Message{
   subject       String
   receiver      String
   sender        String
+  aeskey        String
 }

@@ -1,7 +1,3 @@
-import InboxDiv from "@/components/InboxDiv";
-import SentDiv from "@/components/SentDiv";
-import InboxLogo from "@/icons/inboxlogo";
-import SentLogo from "@/icons/sentlogo";
 import { authOptions } from "@/lib/auth";
 import { getServerSession } from "next-auth";
 import ClientInbox from "@/components/ClientInbox";

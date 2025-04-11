@@ -49,6 +49,3 @@ export default async function Header() {
         </div>
     )
 }
-//on hover on name show an option to extract private key for that a new page opens up where the user 
-// has to enter the account pass once it is verified then the user has to enter the 12 word mnemonic and 
-// if it is correct then from that mnemonic the user gets the corresponding provate key.

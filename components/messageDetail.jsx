@@ -1,20 +1,29 @@
+"use client"
+
+import axios from "axios";
+import { useState } from "react";
+
 export default function MessageDetail({ message, onClose }) {
+    const [decrypted, setDecrypted] = useState("");
 
-    let decrypted = "";
-
-    const handleDecrypt = async () =>{
-        try{
-            const res = await axios.get(`/api/message/encrypt?id=${id}`);
-            if (res.status == 200){
-                decrypted = res.data.decryptedMessage;
+    const handleDecrypt = async (id) => {
+        try {
+            console.log("coming here");
+            console.log("id: ", id);
+            const res = await axios.get(`/api/message/decrypt?id=${id}`);
+            if (res.status === 200) {
+                setDecrypted(res.data.decryptedMessage.message);
+            } else {
+                console.warn("Decryption request failed:", res.status);
             }
-        } catch(error){
-            console.error("Error decryption the message: ", error);
+        } catch (error) {
+            console.error("Error decrypting the message:", error);
         }
-    }
+    };
+    
 
     return (
-        <div className="mt-2 p-4 bg-gray-800 text-white rounded shadow border border-white/10 relative">
+        <div className="mt-2 p-4 bg-gray-800/20 text-white rounded shadow border border-white/10 relative">
             <button
                 onClick={(e) => {
                     e.stopPropagation(); 
@@ -29,11 +38,11 @@ export default function MessageDetail({ message, onClose }) {
             <div><strong>Subject:</strong> {message.subject}</div>
             <div className="mt-2">
                 <strong>Encrypted:</strong>
-                <pre className="text-pink-400 text-xs break-words">{message.encryptedMessage}</pre>
+                <pre className="text-pink-400 text-l break-words">{message.encryptedMessage}</pre>
             </div>
             <div className="mt-2">
                 <strong>Decrypted:</strong>
-                <pre className="text-green-400 text-sm break-words">{decrypted == "" ? "Click on the Decrypt message." : decrypted}</pre>
+                <pre className="text-green-400 text-l break-words">{decrypted == "" ? "Click on the Decrypt message." : decrypted}</pre>
             </div>
             <div className="flex justify-end gap-4 mt-4">
                 <button className="block rounded-3xl bg-blue-500 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-black focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 h-10 flex items-center justify-center">

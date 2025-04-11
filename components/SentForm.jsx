@@ -70,7 +70,6 @@ export default function SentForm({ session }) {
                         className="mt-1 block w-full h-32 resize-none focus:outline-none text-white bg-transparent"
                     />
                 </div>
-
                 <div className="flex justify-end">
                     <button
                         type="submit"

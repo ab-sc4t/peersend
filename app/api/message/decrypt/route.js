@@ -19,21 +19,22 @@ function decryptMessage(encryptedMessage, combinedKeyAndIV) {
 export async function GET(req) {
     try {
         const { searchParams } = new URL(req.url);
-        const username = searchParams.get("id");
+        const idParam = searchParams.get("id");
+        const id = idParam ? Number(idParam) : null;
 
         if (!id) {
             return NextResponse.json({ message: "Mail doesn't exists" }, { status: 400 });
         }
 
-        const messages = await db.message.findMany({
+        const message = await db.message.findUnique({
             where: { id: id }
         });
 
-        const decryptedMessage = messages.map(msg => ({
-            id: msg.id,
-            message: decryptMessage(msg.message, msg.aeskey),
-        }));
-        console.log("running");
+        const decryptedMessage = {
+            id: message.id,
+            message: decryptMessage(message.message, message.aeskey)
+        }
+        console.log("running2");
         console.log(decryptedMessage);
         
         return NextResponse.json({ decryptedMessage: decryptedMessage }, { status: 200 });

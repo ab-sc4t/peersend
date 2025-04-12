@@ -35,7 +35,7 @@ export default function InboxDiv({ session }) {
         <div>
             {messages.length > 0 ? (
                 messages.map((msg, index) => (
-                    <div key={index} className="mb-4">
+                    <div key={index} className="mb-4 w-full">
                         <div
                             className="flex justify-between border-b border-white py-2 px-2 cursor-pointer"
                             onClick={() => handleToggle(index)}
@@ -50,10 +50,15 @@ export default function InboxDiv({ session }) {
                             </div>
                         </div>
 
-                        {openIndex === index && (
-                            <MessageDetail message={msg} />
+                        {openIndex == index && (
+                            <div className="w-full">
+                                <MessageDetail message={msg} onClose={() => setOpenIndex(null)} />
+                            </div>
                         )}
+
                     </div>
+
+
                 ))
             ) : (
                 <p className="text-gray-400">No messages found.</p>

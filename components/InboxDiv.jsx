@@ -51,8 +51,8 @@ export default function InboxDiv({ session }) {
                         </div>
 
                         {openIndex == index && (
-                            <div className="w-full">
-                                <MessageDetail message={msg} onClose={() => setOpenIndex(null)} />
+                            <div className="w-full max-w-full overflow-hidden">
+                                <MessageDetail session={session} message={msg} onClose={() => setOpenIndex(null)} />
                             </div>
                         )}
 

@@ -20,7 +20,7 @@ export default function MessageDetail({ message, onClose }) {
     };
 
     return (
-        <div className="w-full max-w-full mt-2 p-4 bg-gray-800/40 text-white rounded-md shadow border border-white/10">
+        <div className="relative w-full max-w-full mt-2 p-4 bg-gray-800/40 text-white rounded-md shadow border border-white/10 overflow-hidden break-words"> 
             <div className="flex justify-between items-start">
                 <div className="flex flex-col gap-1 w-full">
                     <div><strong>From:</strong> {message.sender}</div>
@@ -28,16 +28,16 @@ export default function MessageDetail({ message, onClose }) {
 
                     <div className="mt-2">
                         <strong>Encrypted:</strong>
-                        <p className="text-pink-400 text-sm break-words whitespace-pre-wrap w-full">
+                        <div className="text-pink-400 text-sm break-words whitespace-pre-wrap w-full overflow-hidden">
                             {message.encryptedMessage}
-                        </p>
+                        </div>
                     </div>
 
                     <div className="mt-2">
                         <strong>Decrypted:</strong>
-                        <p className="text-green-400 text-sm break-words whitespace-pre-wrap w-full">
+                        <div className="text-green-400 text-sm break-words whitespace-pre-wrap w-full overflow-hidden">
                             {decrypted === "" ? "Click on the Decrypt message." : decrypted}
-                        </p>
+                        </div>
                     </div>
                 </div>
 

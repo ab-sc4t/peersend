@@ -1,6 +1,9 @@
 import { db } from "@/lib/db";
 import crypto from "crypto";
 import { NextResponse } from "next/server";
+import { randomBytes, createCipheriv, createHash } from 'crypto';
+import { ed25519, x25519 } from '@noble/curves/ed25519';
+import { edwardsToMontgomeryPub, edwardsToMontgomeryPriv } from '@noble/curves/ed25519';
 
 function encryptMessage(message) {
     const key = crypto.randomBytes(32); 
@@ -24,25 +27,27 @@ function encryptMessage(message) {
     };
 }
 
-function decryptMessage(encryptedMessage, combinedKeyAndIV) {
-    const [base64Key, base64IV] = combinedKeyAndIV.split(":");
-
-    const key = Buffer.from(base64Key, "base64");
-    const iv = Buffer.from(base64IV, "base64");
-    const encryptedBuffer = Buffer.from(encryptedMessage, "base64");
-
-    const decipher = crypto.createDecipheriv("aes-256-cbc", key, iv);
-    let decrypted = decipher.update(encryptedBuffer, undefined, "utf8");
-    decrypted += decipher.final("utf8");
-
-    return decrypted;
-}
-
 export async function POST(req){
     try{
         const body = await req.json();
         console.log(body);
-        const {sender, receiver, message, subject} = body.messageData;
+        const {sender, receiver, message, subject, senPrivKey, recPubKey} = body.messageData;
+        console.log("Sender Private Key: ", senPrivKey);
+        console.log("Recipient Public Key: ", recPubKey);
+
+        //yahan pr humne senPrivKey and recPubKey (ed25519) ko x25519 mai convert krdiya
+        const senderXPriv = edwardsToMontgomeryPriv(Buffer.from(senPrivKey, 'hex'));
+        const recipientXPub = edwardsToMontgomeryPub(Buffer.from(recPubKey, 'hex'));        
+        console.log(senderXPriv);
+        console.log(recipientXPub);
+
+
+        //TESTING
+        const sharedSecret = x25519.getSharedSecret(senderXPriv, recipientXPub);
+        const key = createHash('sha256').update(sharedSecret).digest();
+        console.log(key);
+        
+        
         const senderExists = await db.user.findUnique({where: {username: sender}});
         const receiverExists = await db.user.findUnique({where: {username: receiver}});
         if(!senderExists){
@@ -52,9 +57,22 @@ export async function POST(req){
         const {encryptedMessage, combinedKeyAndIV} = encryptMessage(message);
 
         console.log("combined 2 :", combinedKeyAndIV);
-        
 
-        const data = await db.message.create({data:{message: encryptedMessage, aeskey: combinedKeyAndIV, subject, receiver ,sender}})
+        // Encrypt CombinedKey
+        const nonce = randomBytes(16);
+        const cipher = createCipheriv('aes-256-gcm', key, nonce);
+        const encrypted = Buffer.concat([cipher.update(combinedKeyAndIV, 'utf8'), cipher.final()]);
+        const authTag = cipher.getAuthTag();
+        console.log("nonce: ", nonce);
+        console.log("cipher: ", cipher);
+        console.log("encrypted: ", encrypted);
+        console.log("authTag", authTag);
+        
+        const encryptedAesKey = encrypted.toString('base64');
+        const nonceBase64 = nonce.toString('base64');  
+        const authTagBase64 = authTag.toString('base64');
+
+        const data = await db.message.create({data:{message: encryptedMessage, encryptedAesKey, subject, receiver ,sender, nonce: nonceBase64, authTag: authTagBase64}})
         return NextResponse.json({message: "Mail sent"}, {status: 201})
     } catch (error){
         console.error("Error in saving the message: ", error);
@@ -74,18 +92,20 @@ export async function GET(req) {
             where: { receiver: username }
         });
 
-        const decryptedMessages = messages.map(msg => ({
+        const Messages = messages.map(msg => ({
             id: msg.id,
             subject: msg.subject,
             sender: msg.sender,
             receiver: msg.receiver,
-            message: decryptMessage(msg.message, msg.aeskey),
-            encryptedMessage: msg.message
+            encryptedMessage: msg.message,
+            encryptedAesKey: msg.encryptedAesKey,
+            nonceBase64: msg.nonce,
+            authTagBase64: msg.authTag
         }));
         console.log("running");
-        console.log(decryptedMessages);
+        console.log(Messages);
         
-        return NextResponse.json({ messages: decryptedMessages }, { status: 200 });
+        return NextResponse.json({ messages: Messages }, { status: 200 });
 
     } catch (error) {
         console.error("Error while fetching/decrypting messages: ", error);

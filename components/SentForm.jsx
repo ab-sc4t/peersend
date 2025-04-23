@@ -12,12 +12,16 @@ export default function SentForm({ session }) {
     };
 
     const handleSubmit = async (e) => {
+        const senUsername = session.user.username;
+        const senPrivKey = localStorage.getItem(`privKey-${senUsername}`);
         e.preventDefault();
         const messageData = {
             subject: e.target.subject.value,
             message: e.target.message.value,
             receiver: receiver,
             sender: session.user.username, 
+            senPrivKey: senPrivKey,
+            recPubKey: e.target.recPubKey.value,
         };
         console.log(messageData);
         try{
@@ -70,6 +74,18 @@ export default function SentForm({ session }) {
                         className="mt-1 block w-full h-32 resize-none focus:outline-none text-white bg-transparent"
                     />
                 </div>
+
+                <div className="bg-white/10 rounded-xl py-2 px-6 text-2xl w-full">
+                    <input
+                        type="text"
+                        id="recPubKey"
+                        name="recPubKey"
+                        required
+                        placeholder="Recipient's Public Key"
+                        className="mt-1 block w-full focus:outline-none text-white bg-transparent"
+                    />
+                </div>
+
                 <div className="flex justify-end">
                     <button
                         type="submit"

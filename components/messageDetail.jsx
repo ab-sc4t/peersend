@@ -3,12 +3,22 @@
 import axios from "axios";
 import { useState } from "react";
 
-export default function MessageDetail({ message, onClose }) {
+export default function MessageDetail({ message, onClose, session }) {
     const [decrypted, setDecrypted] = useState("");
+    const [senPubKey, setSenPubKey] = useState("");
+    const username = session.user.username;
+    const recPrivKey = localStorage.getItem(`privKey-${username}`);
 
     const handleDecrypt = async (id) => {
         try {
-            const res = await axios.get(`/api/message/decrypt?id=${id}`);
+            const data = {
+                id,
+                senPubKey,
+                recPrivKey
+            };
+            const res = await axios.post(`/api/message/decrypt`, {
+                data
+            });
             if (res.status === 200) {
                 setDecrypted(res.data.decryptedMessage.message);
             } else {
@@ -38,6 +48,20 @@ export default function MessageDetail({ message, onClose }) {
                         <div className="text-green-400 text-sm break-words whitespace-pre-wrap w-full overflow-hidden">
                             {decrypted === "" ? "Click on the Decrypt message." : decrypted}
                         </div>
+                    </div>
+
+                    <div className="mt-4">
+                        <label htmlFor="senPubKey" className="text-sm font-medium text-white mb-1 block">
+                            Sender's Public Key:
+                        </label>
+                        <input
+                            id="senPubKey"
+                            type="text"
+                            value={senPubKey}
+                            onChange={(e) => setSenPubKey(e.target.value)}
+                            placeholder="Enter sender's public key"
+                            className="w-full rounded-md bg-gray-700 border border-white/20 text-white px-3 py-2 text-sm placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        />
                     </div>
                 </div>
 

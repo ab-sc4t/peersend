@@ -3,6 +3,7 @@ import crypto from "crypto";
 import { NextResponse } from "next/server";
 import { randomBytes, createCipheriv, createHash } from 'crypto';
 import { ed25519, x25519 } from '@noble/curves/ed25519';
+import * as ed from '@noble/ed25519';
 import { edwardsToMontgomeryPub, edwardsToMontgomeryPriv } from '@noble/curves/ed25519';
 
 function encryptMessage(message) {
@@ -37,6 +38,7 @@ export async function POST(req){
 
         //yahan pr humne senPrivKey and recPubKey (ed25519) ko x25519 mai convert krdiya
         const senderXPriv = edwardsToMontgomeryPriv(Buffer.from(senPrivKey, 'hex'));
+        const senderOrgPriv = Buffer.from(senPrivKey, "hex");
         const recipientXPub = edwardsToMontgomeryPub(Buffer.from(recPubKey, 'hex'));        
         console.log(senderXPriv);
         console.log(recipientXPub);
@@ -72,7 +74,22 @@ export async function POST(req){
         const nonceBase64 = nonce.toString('base64');  
         const authTagBase64 = authTag.toString('base64');
 
-        const data = await db.message.create({data:{message: encryptedMessage, encryptedAesKey, subject, receiver ,sender, nonce: nonceBase64, authTag: authTagBase64}})
+        const signedMessage = `${encryptedMessage}::${encryptedAesKey}`;
+        const encoder = new TextEncoder();
+        const signedMessageUint8Array = encoder.encode(signedMessage);
+        console.log("signedMessageUint8Array: ", signedMessageUint8Array);
+        
+
+        const signature = await ed.signAsync(signedMessageUint8Array, senderOrgPriv);
+        console.log("signature: ", signature);
+
+        const signatureBase64 = Buffer.from(signature).toString('base64');
+        console.log("signatureBase64: ", signatureBase64);
+        const signatureUint8Array = new Uint8Array(Buffer.from(signatureBase64, 'base64'));
+        console.log("signatureUint8Array: ", signatureUint8Array);
+        
+
+        const data = await db.message.create({data:{message: encryptedMessage, encryptedAesKey, subject, receiver ,sender, nonce: nonceBase64, authTag: authTagBase64, signature: signatureBase64}})
         return NextResponse.json({message: "Mail sent"}, {status: 201})
     } catch (error){
         console.error("Error in saving the message: ", error);

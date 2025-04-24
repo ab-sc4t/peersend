@@ -6,10 +6,44 @@ import { useState } from "react";
 export default function MessageDetail({ message, onClose, session }) {
     const [decrypted, setDecrypted] = useState("");
     const [senPubKey, setSenPubKey] = useState("");
+    const [verified, setVerified] = useState(false); 
+    const [error, setError] = useState("");
     const username = session.user.username;
     const recPrivKey = localStorage.getItem(`privKey-${username}`);
 
+    const handleVerify = async (id) => {
+        try {
+            const data = {
+                id,
+                senPubKey,
+            };
+            const res = await axios.post(`/api/message/verify`, {
+                data
+            });
+            if (res.status === 200) {
+                setVerified(true); 
+                alert("The message is verified and not tampered with.");
+            } else if (res.status === 202) {
+                setVerified(false);
+                setError("The message is not verified and is tampered.");
+            } else {
+                console.warn("Verification request failed:", res.status);
+                setVerified(false);
+                setError("Verification failed. Please try again.");
+            }
+        } catch (error) {
+            console.error("Error during verification:", error);
+            setVerified(false);
+            setError("Error during verification. Please try again.");
+        }
+    };
+
     const handleDecrypt = async (id) => {
+        if (!verified) {
+            alert("Please verify the message before decrypting.");
+            return;
+        }
+
         try {
             const data = {
                 id,
@@ -21,11 +55,14 @@ export default function MessageDetail({ message, onClose, session }) {
             });
             if (res.status === 200) {
                 setDecrypted(res.data.decryptedMessage.message);
+                setError(""); 
             } else {
                 console.warn("Decryption request failed:", res.status);
+                setError("Decryption failed. Please try again.");
             }
         } catch (error) {
             console.error("Error decrypting the message:", error);
+            setError("Error decrypting the message. Please try again.");
         }
     };
 
@@ -76,13 +113,22 @@ export default function MessageDetail({ message, onClose, session }) {
                 </button>
             </div>
 
+            {error && (
+                <div className="text-red-500 mt-2">
+                    <strong>{error}</strong>
+                </div>
+            )}
+
             <div className="flex justify-end gap-4 mt-4">
-                <button className="rounded-3xl bg-blue-500 px-3 py-2 text-sm font-semibold text-white hover:bg-black h-10">
+                <button 
+                    onClick={() => handleVerify(message.id)}
+                    className="rounded-3xl bg-blue-500 px-3 py-2 text-sm font-semibold text-white hover:bg-black h-10">
                     Verify
                 </button>
                 <button
                     onClick={() => handleDecrypt(message.id)}
-                    className="rounded-3xl bg-green-500 px-3 py-2 text-sm font-semibold text-white hover:bg-black h-10"
+                    disabled={!verified}
+                    className={`rounded-3xl px-3 py-2 text-sm font-semibold text-white hover:bg-black h-10 ${verified ? "bg-green-500" : "bg-gray-500 cursor-not-allowed"}`}
                 >
                     Decrypt
                 </button>

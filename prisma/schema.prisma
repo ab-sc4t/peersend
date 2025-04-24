@@ -29,4 +29,5 @@ model Message{
   encryptedAesKey        String
   nonce                  String
   authTag                String
+  signature              String
 }

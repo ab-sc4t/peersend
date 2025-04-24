@@ -44,10 +44,6 @@ export default function InboxDiv({ session }) {
                                 <div>{msg.sender}</div>
                                 <div>{msg.subject}</div>
                             </div>
-                            <div className="flex gap-4">
-                                <button className="text-blue-500">Verify</button>
-                                <button className="text-green-500">Decrypt</button>
-                            </div>
                         </div>
 
                         {openIndex == index && (

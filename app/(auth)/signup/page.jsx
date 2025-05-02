@@ -42,92 +42,40 @@ export default function Signup() {
     }
 
     return (
-        <div
-            className="flex items-center justify-center min-h-screen bg-gray-100 h-screen bg-cover bg-center"
-            style={{ backgroundImage: "url('/HomePageWallPaper.png')" }}
-        >
-            <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-md">
-                <h2 className="text-2xl font-bold text-center mb-2 text-black">Register</h2>
-                {error && <p className="text-red-500 text-center mb-4">{error}</p>}
-                <form onSubmit={handleSubmit}>
-                    <div className="mb-4">
-                        <label htmlFor="firstname" className="block text-sm font-medium text-gray-700">
-                            User Name
-                        </label>
-                        <input
-                            type="text"
-                            id="username"
-                            name="username"
-                            required
-                            placeholder="abayush"
-                            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-black text-black"
-                        />
+        <div className="flex items-center justify-center min-h-screen bg-[#121212]">
+            <div className="w-full max-w-md bg-[#1e1e1e] p-6 mt-18 rounded-lg border border-[#2d2d2d] shadow-xl">
+                <h2 className="text-3xl font-bold text-center mb-6 text-white">Register</h2>
+                {error && (
+                    <div className="mb-2 p-2 bg-red-900/20 border border-red-500/50 text-red-400 rounded-lg">
+                        {error}
                     </div>
-                    <div className="mb-4">
-                        <label htmlFor="firstname" className="block text-sm font-medium text-gray-700">
-                            First Name
-                        </label>
-                        <input
-                            type="text"
-                            id="firstname"
-                            name="firstname"
-                            required
-                            placeholder="Ayush"
-                            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-black text-black"
-                        />
-                    </div>
-                    <div className="mb-4">
-                        <label htmlFor="lastname" className="block text-sm font-medium text-gray-700">
-                            Last Name
-                        </label>
-                        <input
-                            type="text"
-                            id="lastname"
-                            name="lastname"
-                            required
-                            placeholder="Bansal"
-                            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-black text-black"
-                        />
-                    </div>
-                    <div className="mb-4">
-                        <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                            Email
-                        </label>
-                        <input
-                            type="email"
-                            id="email"
-                            name="email"
-                            required
-                            placeholder="admin@example.com"
-                            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-black text-black"
-                        />
-                    </div>
-                    <div className="mb-4">
-                        <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                            Password
-                        </label>
-                        <input
-                            type="password"
-                            id="password"
-                            name="password"
-                            required
-                            placeholder="Enter a strong password"
-                            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-black text-black"
-                        />
-                    </div>
+                )}
+                <form onSubmit={handleSubmit} className="space-y-1">
+                    {['username', 'firstname', 'lastname', 'email', 'password'].map((field) => (
+                        <div key={field}>
+                            <label htmlFor={field} className="block text-sm font-medium text-gray-300 mb-1">
+                                {field.charAt(0).toUpperCase() + field.slice(1)}
+                            </label>
+                            <input
+                                type={field === 'password' ? 'password' : 'text'}
+                                id={field}
+                                name={field}
+                                required
+                                placeholder={field === 'email' ? 'admin@example.com' : `Enter your ${field}`}
+                                className="w-full px-4 py-3 bg-[#2d2d2d] border border-[#3d3d3d] rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-colors duration-200"
+                            />
+                        </div>
+                    ))}
                     <button
                         type="submit"
-                        className="w-full bg-black text-white py-2 px-4 rounded-lg hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black"
+                        className="w-full bg-purple-600 text-white py-3 px-4 rounded-lg hover:bg-purple-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500"
                     >
                         Register
                     </button>
                 </form>
-                <p className="text-sm text-center text-gray-600 mt-4">
+                <p className="text-sm text-center text-gray-400 mt-6">
                     Already a registered user?{" "}
-                    <a
-                        href="/signin"
-                        className="text-blue-500 hover:underline focus:ring focus:ring-blue-500"
-                    >
+                    <a href="/signin" className="text-purple-400 hover:text-purple-300 transition-colors duration-200">
                         Sign in
                     </a>
                 </p>

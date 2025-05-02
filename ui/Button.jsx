@@ -1,14 +1,16 @@
 import Link from "next/link";
 
-export default function Button(props) {
+export default function Button({ href, text, startingLogo, endingLogo, className }) {
+    const defaultStyles = "block px-4 py-2 text-center text-sm font-semibold rounded-lg transition-all duration-200 shadow-sm focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 flex items-center justify-center"
+    
     return ( 
         <Link
-            className="block rounded-3xl bg-green-400 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-black focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600 h-10 flex items-center justify-center"
-            href={props.href}
+            className={`${defaultStyles} ${className || 'bg-purple-600 hover:bg-purple-700 text-white'}`}
+            href={href}
         >
-            {props.startingLogo && <div>{props.startingLogo}</div>}
-            <div className="px-2">{props.text}</div>
-            {props.endingLogo && <div>{props.endingLogo}</div>}
+            {startingLogo && <div className="mr-2">{startingLogo}</div>}
+            <div>{text}</div>
+            {endingLogo && <div className="ml-2">{endingLogo}</div>}
         </Link>
     );
 }

@@ -37,7 +37,7 @@ export default async function Header() {
                     </>
                 ) : (
                     <>
-                        <Button
+                        <Button 
                             text="Register"
                             href="/signup"
                         />

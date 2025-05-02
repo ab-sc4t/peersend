@@ -36,18 +36,18 @@ export default function SignIn() {
     };
 
     return (
-        <div className="flex items-center justify-center min-h-screen bg-gray-100 h-screen bg-cover bg-center" style={{ backgroundImage: "url('/HomePageWallPaper.png')" }}>
-            <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-md">
-                <h2 className="text-2xl font-bold text-center mb-2 text-black">Login</h2>
+        <div className="flex items-center justify-center min-h-screen bg-[#121212]">
+            <div className="w-full max-w-md bg-[#1e1e1e] p-8 rounded-lg border border-[#2d2d2d] shadow-xl">
+                <h2 className="text-3xl font-bold text-center mb-6 text-white">Login</h2>
                 {error && (
-                    <div className="mb-4 p-3 bg-red-100 border border-red-400 text-red-700 rounded">
+                    <div className="mb-4 p-3 bg-red-900/20 border border-red-500/50 text-red-400 rounded-lg">
                         {error}
                     </div>
                 )}
-                <form onSubmit={handleSubmit} className="mt-4">
-                    <div className="mb-4">
-                        <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                            UserName
+                <form onSubmit={handleSubmit} className="mt-4 space-y-6">
+                    <div>
+                        <label htmlFor="email" className="block text-sm font-medium text-gray-300">
+                            Username
                         </label>
                         <input
                             type="username"
@@ -55,11 +55,11 @@ export default function SignIn() {
                             name="username"
                             required
                             placeholder="abayush"
-                            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-black text-black"
+                            className="mt-1 block w-full px-4 py-3 bg-[#2d2d2d] border border-[#3d3d3d] rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                         />
                     </div>
-                    <div className="mb-4">
-                        <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+                    <div>
+                        <label htmlFor="password" className="block text-sm font-medium text-gray-300">
                             Password
                         </label>
                         <input
@@ -68,21 +68,21 @@ export default function SignIn() {
                             name="password"
                             required
                             placeholder="Enter your password"
-                            className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-black text-black"
+                            className="mt-1 block w-full px-4 py-3 bg-[#2d2d2d] border border-[#3d3d3d] rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
                         />
                     </div>
                     <button
                         type="submit"
-                        className="w-full bg-black text-white py-2 px-4 rounded-lg hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="w-full bg-purple-600 text-white py-3 px-4 rounded-lg hover:bg-purple-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:opacity-50 disabled:cursor-not-allowed"
                         disabled={loading}
                     >
                         {loading ? "Signing in..." : "Login"}
                     </button>
                 </form>
 
-                <p className="text-sm text-center text-gray-600 mt-4">
+                <p className="text-sm text-center text-gray-400 mt-6">
                     Don't have an account?{" "}
-                    <a href="/signup" className="text-blue-500 hover:underline focus:ring focus:ring-blue-500">
+                    <a href="/signup" className="text-purple-400 hover:text-purple-300 transition-colors duration-200">
                         Register
                     </a>
                 </p>

@@ -28,45 +28,34 @@ export default function HomePage() {
         {/* Hero Image/Encryption Flow Diagram */}
         <div className="w-full md:w-1/2 mt-12 md:mt-0 flex justify-center">
           <div className="bg-gray-800/70 rounded-xl p-6 border border-blue-700/30 backdrop-blur-sm max-w-md">
-            <div className="flex flex-col items-center">
-              <h3 className="font-semibold text-center mb-4">Encrypted Message Flow</h3>
-              <div className="flex items-start space-x-4 mb-6">
-                <div className="bg-blue-900/60 p-3 rounded-lg">
-                  <Key size={24} className="text-blue-400" />
+            <div className="flex flex-col">
+              {[
+                {
+                  icon: <Key size={24} className="text-blue-400" />,
+                  title: "Key Generation",
+                  desc: "Public-private key pair + recovery mnemonic"
+                },
+                {
+                  icon: <Lock size={24} className="text-blue-400" />,
+                  title: "Message Encryption",
+                  desc: "AES encryption + per-recipient key encryption"
+                },
+                {
+                  icon: <Shield size={24} className="text-blue-400" />,
+                  title: "Signature Verification",
+                  desc: "Digital signature ensures sender authenticity"
+                }
+              ].map(({icon, title, desc}, i) => (
+                <div key={i} className="flex items-center mb-6">
+                  <div className="bg-blue-900/60 p-3 rounded-lg min-w-[48px] flex justify-center items-center mr-4">
+                    {icon}
+                  </div>
+                  <div>
+                    <h4 className="font-medium">{title}</h4>
+                    <p className="text-sm text-gray-400">{desc}</p>
+                  </div>
                 </div>
-                <div>
-                  <h4 className="font-medium">Key Generation</h4>
-                  <p className="text-sm text-gray-400">Public-private key pair + recovery mnemonic</p>
-                </div>
-              </div>
-              
-              <div className="w-full border-l-2 border-dashed border-blue-700/50 ml-6 pl-8 pb-6 relative">
-                <div className="absolute left-0 top-0 w-3 h-3 rounded-full bg-blue-500 -ml-1.5"></div>
-              </div>
-              
-              <div className="flex items-start space-x-4 mb-6">
-                <div className="bg-blue-900/60 p-3 rounded-lg">
-                  <Lock size={24} className="text-blue-400" />
-                </div>
-                <div>
-                  <h4 className="font-medium">Message Encryption</h4>
-                  <p className="text-sm text-gray-400">AES encryption + per-recipient key encryption</p>
-                </div>
-              </div>
-              
-              <div className="w-full border-l-2 border-dashed border-blue-700/50 ml-6 pl-8 pb-6 relative">
-                <div className="absolute left-0 top-0 w-3 h-3 rounded-full bg-blue-500 -ml-1.5"></div>
-              </div>
-              
-              <div className="flex items-start space-x-4">
-                <div className="bg-blue-900/60 p-3 rounded-lg">
-                  <Shield size={24} className="text-blue-400" />
-                </div>
-                <div>
-                  <h4 className="font-medium">Signature Verification</h4>
-                  <p className="text-sm text-gray-400">Digital signature ensures sender authenticity</p>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
         </div>

@@ -13,7 +13,7 @@ export default function Signup() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
+    
         const formData = {
             username: e.target.username.value,
             firstname: e.target.firstname.value,
@@ -21,6 +21,16 @@ export default function Signup() {
             email: e.target.email.value,
             password: e.target.password.value,
         }
+    
+        // Password validation
+        const password = formData.password;
+        const passwordPattern = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$/;
+    
+        if (!passwordPattern.test(password)) {
+            setError("Password must be at least 8 characters long, contain one uppercase letter, one lowercase letter, and one digit.");
+            return; // Don't proceed if password is invalid
+        }
+    
         try {
             const res = await axios.post("/api/user",
                 { formData },
@@ -32,6 +42,7 @@ export default function Signup() {
                 setMnemonic(data.mnemonic); // show mnemonic
                 setPublicKey(data.publicKey);
                 setShowModal(true);
+                router.push('/signin');
             } else {
                 throw new Error("Signup failed");
             }
@@ -40,6 +51,7 @@ export default function Signup() {
             setError("Signup failed. Please check your details and try again.");
         }
     }
+    
 
     return (
         <div

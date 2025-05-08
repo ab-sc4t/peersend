@@ -1,16 +1,13 @@
 import Image from "next/image";
 import LandingPage from "@/components/LandingPage";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
-export default function Home() {
+export default async function Home() {
+  const session = await getServerSession(authOptions);
   return (
-    // <div
-    //   className="h-screen bg-cover bg-center"
-    //   style={{ backgroundImage: "url('/HomePageWallPaper.png')" }}
-    // >
-      
-    // </div>
     <div>
-      <LandingPage />
+      <LandingPage session={session}/>
     </div>
   );
 }

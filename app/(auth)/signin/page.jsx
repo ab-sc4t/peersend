@@ -76,7 +76,7 @@ export default function SignIn() {
                         className="w-full bg-black text-white py-2 px-4 rounded-lg hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black disabled:opacity-50 disabled:cursor-not-allowed"
                         disabled={loading}
                     >
-                        {loading ? "Signing in..." : "Login"}
+                        {loading ? "Logging in..." : "Login"}
                     </button>
                 </form>
 

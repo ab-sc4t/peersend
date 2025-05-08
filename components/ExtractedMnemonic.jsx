@@ -41,7 +41,7 @@ export default function ExtractedMnemonic({ publicKey, isOpen, onClose }) {
                 </div>
 
                 <button
-                    onClick={handleClose}  // Use the new handleClose function
+                    onClick={handleClose} 
                     className="w-full mt-4 bg-black text-white py-2 px-4 rounded-lg hover:bg-gray-800"
                 >
                     Close

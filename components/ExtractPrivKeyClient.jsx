@@ -17,37 +17,40 @@ export default function ExtractPrivKeyClient({ session }) {
     }
     const handleSubmit = async (e) => {
         e.preventDefault();
-
+    
         const formData = new FormData(e.target);
         const password = formData.get("password");
         const mnemonicWords = Array.from({ length: 12 }, (_, i) => formData.get(`word-${i}`)).join(" ");
-
+    
         const mnemonicData = {
             username,
             password,
             mnemonic: mnemonicWords,
         };
         console.log(mnemonicWords);
-
+    
         try {
-            const res = await axios.post("/api/user/extract", mnemonicData); // POST not GET for sending body
-            if (res.status === 200) {
+            const res = await axios.post("/api/user/extract", mnemonicData); 
+            if (res.status < 200 || res.status >= 300) {
+                alert("Error: " + (res.data.message || "An unknown error occurred"));
+            } else {
                 const data = res.data;
                 localStorage.setItem(`privKey-${data.username}`, data.privateKey);
                 console.log(data);
                 setPublicKey(data.publicKey);
                 setShowModal(true);
-            } else {
-                console.log("Error:", res.data.message);
             }
         } catch (err) {
             console.error("Request error:", err);
+            alert("Request error: " + (err.response?.data?.message || err.message));
         }
     };
+    
+    
 
     return (
         <div
-            className="p-20 h-screen bg-center bg-cover flex items-center justify-center"
+            className="p-20 h-screen bg-center bg-cover bg-gray-100 flex items-center justify-center"
             style={{ backgroundImage: "url('/HomePageWallPaper.png')" }}
         >
             <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-md">

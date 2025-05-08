@@ -21,6 +21,9 @@ export async function POST(req){
         const publicKey = await ed.getPublicKey(privateKey);
         const privateKeyBaseHex = Buffer.from(privateKey).toString("hex")
         const publicKeyBaseHex = Buffer.from(publicKey).toString("hex")
+        if (user.publicKey !== publicKeyBaseHex){
+            return NextResponse.json({message: "Mnemonics are wrong"}, {status: 410})
+        }
         console.log("Mnemonic:", mnemonic);
         console.log("Private Key (hex):", privateKeyBaseHex);
         console.log("Public Key  (hex):", publicKeyBaseHex);

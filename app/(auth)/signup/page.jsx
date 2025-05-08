@@ -13,14 +13,32 @@ export default function Signup() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
+    
+        const password = e.target.password.value;
+    
+        // Password validation
+        const isValidPassword = (password) => {
+            return (
+                password.length >= 8 &&
+                /[A-Z]/.test(password) &&
+                /[a-z]/.test(password) &&
+                /[0-9]/.test(password)
+            );
+        };
+    
+        if (!isValidPassword(password)) {
+            setError("Password must be at least 8 characters long and contain at least one uppercase letter, one lowercase letter, and one digit.");
+            return;
+        }
+    
         const formData = {
             username: e.target.username.value,
             firstname: e.target.firstname.value,
             lastname: e.target.lastname.value,
             email: e.target.email.value,
-            password: e.target.password.value,
-        }
+            password: password,
+        };
+    
         try {
             const res = await axios.post("/api/user",
                 { formData },
@@ -32,6 +50,8 @@ export default function Signup() {
                 setMnemonic(data.mnemonic); // show mnemonic
                 setPublicKey(data.publicKey);
                 setShowModal(true);
+            } else if (res.status === 409){
+                alert("Username or email already exists")
             } else {
                 throw new Error("Signup failed");
             }
@@ -39,7 +59,8 @@ export default function Signup() {
             console.error("Error during signup: ", error);
             setError("Signup failed. Please check your details and try again.");
         }
-    }
+    };
+    
 
     return (
         <div

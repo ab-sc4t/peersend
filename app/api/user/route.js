@@ -34,9 +34,17 @@ export async function POST(req){
             return NextResponse.json({ message: "Password is required for signup" }, { status: 400 });
         }
 
-        const existingUser = await db.user.findUnique({where: {username}});
+        const existingUser = await db.user.findFirst({
+            where: {
+                OR: [
+                    { username: username },
+                    { email: email }
+                ]
+            }
+        });
         if (existingUser) {
-            return NextResponse.json({ message: "User already exists" }, { status: 409 });
+            console.log("user already exists");
+            return NextResponse.json({ message: "Username or email already exists" }, { status: 409 });
         }
 
         const hashedPassword = await bcrypt.hash(password, 10);

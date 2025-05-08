@@ -1,14 +1,22 @@
 "use client";
 
 import React from "react";
+import { useRouter } from 'next/navigation'; 
 
-export default function ExtractedMnemonic({publicKey, isOpen, onClose }) {
+export default function ExtractedMnemonic({ publicKey, isOpen, onClose }) {
+    const router = useRouter();  
+
     const handleCopy = (text) => {
         navigator.clipboard.writeText(text).then(() => {
             alert("Copied to clipboard!");
         }).catch((err) => {
             console.error("Failed to copy: ", err);
         });
+    };
+
+    const handleClose = () => {
+        onClose();  
+        router.push("/");  
     };
 
     if (!isOpen) return null;
@@ -26,14 +34,14 @@ export default function ExtractedMnemonic({publicKey, isOpen, onClose }) {
                     </div>
                     <button
                         onClick={() => handleCopy(publicKey)}
-                        className="mt-2 text-sm text-black  hover:underline"
+                        className="mt-2 text-sm text-black hover:underline"
                     >
                         Copy Public Key
                     </button>
                 </div>
 
                 <button
-                    onClick={onClose}
+                    onClick={handleClose}  // Use the new handleClose function
                     className="w-full mt-4 bg-black text-white py-2 px-4 rounded-lg hover:bg-gray-800"
                 >
                     Close

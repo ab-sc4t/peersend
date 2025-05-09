@@ -8,7 +8,6 @@ import { useRouter } from "next/navigation";
 export default function SentForm({ session }) {
     const router = useRouter();
     const [receiver, setReceiver] = useState("");
-    const [sending, setSending] = useState(true); 
 
     const handleChangeReceiver = (e) => {
         setReceiver(e.target.value);
@@ -16,7 +15,6 @@ export default function SentForm({ session }) {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        setSending(true);
 
         const senUsername = session.user.username;
         const senPrivKey = localStorage.getItem(`privKey-${senUsername}`);
@@ -24,27 +22,22 @@ export default function SentForm({ session }) {
         const messageData = {
             subject: e.target.subject.value,
             message: e.target.message.value,
-            receiver,
-            sender: senUsername,
-            senPrivKey,
+            receiver: receiver,
+            sender: session.user.username, 
+            senPrivKey: senPrivKey,
             recPubKey: e.target.recPubKey.value,
         };
 
-        try {
-            const res = await axios.post("/api/message", messageData, {
-                headers: { "Content-Type": "application/json" },
-            });
-
-            if (res.status === 201) {
-                setTimeout(() => {
-                    alert("Mail sent");
-                    router.push("/inbox");
-                }, 100);
+        console.log(messageData);
+        try{
+            const res = await axios.post("/api/message", {messageData}, {headers:{"Content-Type": "application/json"}});
+            const data = await res.data;
+            if (res.status==201){
+                alert("Mail sent");
+                router.push('/inbox')
             }
-        } catch (error) {
+        } catch(error) {
             console.error("Error while saving the message to db: ", error);
-        } finally {
-            setSending(false); 
         }
     };
 
@@ -101,16 +94,11 @@ export default function SentForm({ session }) {
                 <div className="flex justify-end">
                     <button
                         type="submit"
-                        disabled={sending}
-                        className={`bg-white/10 text-2xl text-white py-2 px-4 rounded-lg transition-opacity duration-300 hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black ${
-                            sending ? "opacity-50 cursor-not-allowed" : ""
-                        }`}
+                        className="bg-white/10 text-2xl text-white py-2 px-4 rounded-lg hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black"
                     >
-                        <div className="flex gap-4 items-center">
-                            {!sending && <SendLogo />}
-                            <div className="text-green-500">
-                                {sending ? "Sending..." : "Send"}
-                            </div>
+                        <div className="flex gap-4">
+                            <SendLogo />
+                            <div className="text-green-500">Send</div>
                         </div>
                     </button>
                 </div>
